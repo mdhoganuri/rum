@@ -1,3 +1,5 @@
+use crate::memory::MemoryManager;
+
 pub fn conditional_move (){
     // if $r[C] 6= 0 then $r[A] := $r[B]
 }
@@ -30,13 +32,15 @@ pub fn halt () {
     // Computation stops
 }
 
-pub fn map_segment () {
+pub fn map_segment (mut memory: MemoryManager) {
     /* A new segment is created with a number of words
     equal to the value in $r[C]. Each word in the
     new segment is initialized to zero. A bit pattern
     that is not all zeroes and does not identify any
     currently mapped segment is placed in $r[B].
     */
+    memory.allocate_memory();
+
 }
 
 pub fn unmap_segment () {
