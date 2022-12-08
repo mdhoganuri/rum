@@ -1,17 +1,19 @@
-pub struct MemoryManager {
-    memory: Vec<Vec<u32>>,
-    unmapped: Vec<u32>,
-    registers: Vec<u32>,
+type Umi = u32;
+
+pub struct Memory {
+    memory: Vec<Vec<Umi>>,
+    unmapped: Vec<Umi>,
+    registers: Vec<Umi>,
 }
 
-impl MemoryManager {
+impl Memory {
     /*
     Constructor */
     pub fn init () -> Self {
-        MemoryManager {
+        Memory {
             memory: vec![vec![]],
             unmapped: vec![],
-            registers: vec![]
+            registers: vec![0; 8]
         }
     }
 
@@ -40,5 +42,17 @@ impl MemoryManager {
     pub fn deallocate_memory (&mut self, index: u32) {
         self.memory.get_mut(index as usize).unwrap().clear();
         self.unmapped.push(index);
+    }
+
+    /*
+    Sets the value of a register. */
+    pub fn set_register (&mut self, index: Umi, input: Umi) {
+        self.registers[index as usize] = input
+    }
+
+    /*
+    Gets the value of a register. */
+    pub fn get_register (&mut self, index: Umi) -> Umi {
+        self.registers[index as usize]
     }
 }
