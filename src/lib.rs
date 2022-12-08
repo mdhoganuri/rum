@@ -1,3 +1,3 @@
 pub mod rumload;
-pub mod rumdis;
+pub mod instruct;
 pub mod memory;

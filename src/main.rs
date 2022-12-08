@@ -1,6 +1,6 @@
 use std::env;
 use rum::rumload;
-use rum::rumdis;
+use rum::instruct;
 use rum::memory::Memory;
 
 fn main() {
@@ -11,8 +11,8 @@ fn main() {
 
     println!("{} instructions", instructions.len());
 
-    for instruction in instructions {
-        println!("Instruction # {}", instruction);
-        rumdis::execute(instruction, &mut memory);
+    loop {
+        println!("Instruction # {}", memory.get_counter());
+        instruct::execute(*instructions.get(memory.get_counter() as usize).unwrap(), &mut memory);
     }
 }
