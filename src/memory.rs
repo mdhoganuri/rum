@@ -22,21 +22,13 @@ impl Memory {
     /* 
     Allocates the necessary space in memory,
     checking for unmapped segments before doing so. */
-    pub fn allocate_memory (&mut self) -> Option<&Vec<u32>> {
-        if self.unmapped.len() == 0 {
-            return self.reclaim_memory();
+    pub fn allocate_memory (&mut self, input: u32) -> u32 {
+        if self.unmapped.len() != 0 {
+            self.unmapped.pop().unwrap()
+        } else {
+            self.memory.push(vec![0; input as usize]);
+            (self.memory.len() - 1) as u32
         }
-
-        self.memory.push(vec![0; 32]);
-        self.memory.last()
-    }
-
-    /*
-    Reclaims space in memory from an unmapped
-    segment in order to prevent the unnecesdary
-    allocation of more memory. */
-    fn reclaim_memory (&mut self) -> Option<&Vec<u32>> {
-        return self.memory.get(self.unmapped.pop().unwrap() as usize);
     }
 
     /*

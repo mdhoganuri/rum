@@ -9,10 +9,10 @@ fn main() {
 
     let mut memory = Memory::init();
 
-    println!("{} instructions", instructions.len());
+    // println!("{} instructions", instructions.len());
 
     loop {
-        println!("Instruction # {}", memory.get_counter());
+        // println!("Instruction # {}", memory.get_counter());
         instruct::execute(*instructions.get(memory.get_counter() as usize).unwrap(), &mut memory);
     }
 }
