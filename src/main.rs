@@ -1,18 +1,14 @@
 use std::env;
 use rum::rumload;
-use rum::instruct;
-use rum::memory::Memory;
+use rum::manager::Manager;
+use rum::instructions;
 
 fn main() {
     let input = env::args().nth(1);
     let instructions = rumload::load(input.as_deref());
-
-    let mut memory = Memory::init();
-
-    // println!("{} instructions", instructions.len());
+    let mut manager = Manager::new();
 
     loop {
-        // println!("Instruction # {}", memory.get_counter());
-        instruct::execute(*instructions.get(memory.get_counter() as usize).unwrap(), &mut memory);
+        instructions::execute(instructions[manager.counter as usize], &mut manager)
     }
 }

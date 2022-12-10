@@ -6,8 +6,6 @@ Text.
 
 ## Solution Architecture
 
-Text.
-
 ## Time Consumption
 
 - Estimated hours spent analyzing the problems posed in the assignment: ?
