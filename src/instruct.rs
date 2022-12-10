@@ -78,7 +78,7 @@ pub fn execute (inst: Umi, mem: &mut Memory) {
         },
         o if o == Opcode::NAND as u32 => {
             // NAND
-            let b = mem.get_register(get(&RA, inst));
+            let b = mem.get_register(get(&RB, inst));
             let c = mem.get_register(get(&RC, inst));
 
             mem.set_register( get(&RA, inst), !(b & c));
@@ -103,7 +103,7 @@ pub fn execute (inst: Umi, mem: &mut Memory) {
         },
         o if o == Opcode::Out as u32 => {
             // Out
-            print!("{}", mem.get_register(get(&RC, inst)));
+            print!("{}", char::from_u32(mem.get_register(get(&RC, inst))).unwrap());
             mem.increment_counter();
         },
         o if o == Opcode::In as u32 => {
