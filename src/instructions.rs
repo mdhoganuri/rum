@@ -22,10 +22,26 @@ pub fn get (field: &Field, instruction: u32) -> u32 {
     (instruction >> field.lsb) & mask(field.width)
 }
 
-pub fn execute (ins: u32, mem: &mut Manager) {
+pub fn execute (ins: u32, mut mem: &mut Manager) {
     let a_idx = get(&RA, ins) as usize;
     let b_idx = get(&RB, ins) as usize;
     let c_idx = get(&RC, ins) as usize;
+
+    /*
+    println!();
+    println!("{:?}", mem.memory);
+    println!("{:?}", mem.registers);
+    println!("Opcode: {}", get(&OP, ins));
+    if get(&OP, ins) != 13 {
+        println!("a_idx: {} | a_reg: {}", a_idx, mem.registers[a_idx]);
+        println!("b_idx: {} | b_reg: {}", b_idx, mem.registers[b_idx]);
+        println!("c_idx: {} | c_reg: {}", c_idx, mem.registers[c_idx]);
+    } else {
+        println!("a_idx: {} | a_reg: {}", get(&RL, ins), mem.registers[get(&RL, ins) as usize]);
+        println!("value = {}", get(&VL, ins));
+    }
+    println!();  */
+
 
     match get(&OP, ins) {
         // CMove Instruction
@@ -38,13 +54,13 @@ pub fn execute (ins: u32, mem: &mut Manager) {
         },
         // Load Instruction
         o if o == Opcode::Load as u32 => {
-            mem.registers[a_idx] = mem.memory[b_idx][c_idx];
+            mem.registers[a_idx] = mem.memory[mem.registers[b_idx] as usize][mem.registers[c_idx] as usize];
 
             mem.counter += 1;
         },
         // Store Instruction
         o if o == Opcode::Store as u32 => {
-            mem.memory[a_idx][b_idx] = mem.registers[c_idx];
+            mem.memory[mem.registers[a_idx] as usize][mem.registers[b_idx] as usize] = mem.registers[c_idx];
 
             mem.counter += 1;
         },
@@ -95,7 +111,7 @@ pub fn execute (ins: u32, mem: &mut Manager) {
         // UMapSeg Instruction
         o if o == Opcode::UMapSeg as u32 => {
             mem.unmapped.push(mem.registers[c_idx]);
-            mem.memory[c_idx].clear();
+            mem.memory[mem.registers[c_idx] as usize].clear();
 
             mem.counter += 1;
         },
@@ -120,7 +136,7 @@ pub fn execute (ins: u32, mem: &mut Manager) {
         },
         // LP Instruction
         o if o == Opcode::LP as u32 => {
-            let seg_b = mem.memory[b_idx].clone();
+            let seg_b = mem.memory[mem.registers[b_idx] as usize].clone();
             mem.memory[0] = seg_b;
 
             mem.counter = mem.registers[c_idx];

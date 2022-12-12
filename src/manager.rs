@@ -10,7 +10,7 @@ impl Manager {
     Constructor */
     pub fn new () -> Self {
         Manager {
-            memory: vec![vec![0; 32]; 1],
+            memory: vec![],
             unmapped: vec![],
             registers: vec![0; 8],
             counter: 0

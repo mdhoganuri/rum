@@ -7,8 +7,9 @@ fn main() {
     let input = env::args().nth(1);
     let instructions = rumload::load(input.as_deref());
     let mut manager = Manager::new();
+    manager.memory.push(instructions);
 
     loop {
-        instructions::execute(instructions[manager.counter as usize], &mut manager)
+        instructions::execute(manager.memory[0][manager.counter as usize], &mut manager)
     }
 }
