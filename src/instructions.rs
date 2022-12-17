@@ -23,13 +23,29 @@ pub fn get (field: &Field, instruction: u32) -> u32 {
 }
 
 pub fn execute (ins: u32, mut mem: &mut Manager) {
+    let a_idx = get(&RA, ins) as usize;
+    let b_idx = get(&RB, ins) as usize;
+    let c_idx = get(&RC, ins) as usize;
+
+    /*
+    println!();
+    println!("{:?}", mem.memory);
+    println!("{:?}", mem.registers);
+    println!("Opcode: {}", get(&OP, ins));
+    if get(&OP, ins) != 13 {
+        println!("a_idx: {} | a_reg: {}", a_idx, mem.registers[a_idx]);
+        println!("b_idx: {} | b_reg: {}", b_idx, mem.registers[b_idx]);
+        println!("c_idx: {} | c_reg: {}", c_idx, mem.registers[c_idx]);
+    } else {
+        println!("a_idx: {} | a_reg: {}", get(&RL, ins), mem.registers[get(&RL, ins) as usize]);
+        println!("value = {}", get(&VL, ins));
+    }
+    println!();  */
+
+
     match get(&OP, ins) {
         // CMove Instruction
         o if o == Opcode::CMov as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-
             if mem.registers[c_idx] != 0 {
                 mem.registers[a_idx] = mem.registers[b_idx];
             }
@@ -38,60 +54,36 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         },
         // Load Instruction
         o if o == Opcode::Load as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-
             mem.registers[a_idx] = mem.memory[mem.registers[b_idx] as usize][mem.registers[c_idx] as usize];
 
             mem.counter += 1;
         },
         // Store Instruction
         o if o == Opcode::Store as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-
             mem.memory[mem.registers[a_idx] as usize][mem.registers[b_idx] as usize] = mem.registers[c_idx];
 
             mem.counter += 1;
         },
         // Add Instruction
         o if o == Opcode::Add as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-
             mem.registers[a_idx] = mem.registers[b_idx].wrapping_add(mem.registers[c_idx]);
 
             mem.counter += 1;
         },
         // Mul Instruction
         o if o == Opcode::Mul as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-
             mem.registers[a_idx] = mem.registers[b_idx].wrapping_mul(mem.registers[c_idx]);
 
             mem.counter += 1;
         },
         // Div Instruction
         o if o == Opcode::Div as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-
             mem.registers[a_idx] = mem.registers[b_idx] / mem.registers[c_idx];
 
             mem.counter += 1;
         },
         // NAND Instruction
         o if o == Opcode::NAND as u32 => {
-            let a_idx = get(&RA, ins) as usize;
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-            
             mem.registers[a_idx] = !(mem.registers[b_idx] & mem.registers[c_idx]);
 
             mem.counter += 1;
@@ -102,8 +94,6 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         },
         // MapSeg Instruction
         o if o == Opcode::MapSeg as u32 => {
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
             let idx: u32;
 
             if mem.unmapped.len() > 0 {
@@ -120,8 +110,6 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         },
         // UMapSeg Instruction
         o if o == Opcode::UMapSeg as u32 => {
-            let c_idx = get(&RC, ins) as usize;
-
             mem.unmapped.push(mem.registers[c_idx]);
             mem.memory[mem.registers[c_idx] as usize].clear();
 
@@ -129,16 +117,12 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         },
         // Out Instruction
         o if o == Opcode::Out as u32 => {
-            let c_idx = get(&RC, ins) as usize;
-
             print!("{}", char::from_u32(mem.registers[c_idx]).unwrap());
 
             mem.counter += 1;
         },
         // In Instruction
         o if o == Opcode::In as u32 => {
-            let c_idx = get(&RC, ins) as usize;
-
             let mut buf = [0_u8];
             let res = std::io::stdin().read(&mut buf).unwrap();
 
@@ -152,9 +136,6 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         },
         // LP Instruction
         o if o == Opcode::LP as u32 => {
-            let b_idx = get(&RB, ins) as usize;
-            let c_idx = get(&RC, ins) as usize;
-            
             let seg_b = mem.memory[mem.registers[b_idx] as usize].clone();
             mem.memory[0] = seg_b;
 
