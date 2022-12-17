@@ -111,7 +111,7 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         // UMapSeg Instruction
         o if o == Opcode::UMapSeg as u32 => {
             mem.unmapped.push(mem.registers[c_idx]);
-            mem.memory[mem.registers[c_idx] as usize].clear();
+            // mem.memory[c_reg as usize].clear();
 
             mem.counter += 1;
         },
