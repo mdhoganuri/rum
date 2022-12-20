@@ -136,9 +136,11 @@ pub fn execute (ins: u32, mut mem: &mut Manager) {
         },
         // LP Instruction
         o if o == Opcode::LP as u32 => {
-            let seg_b = mem.memory[mem.registers[b_idx] as usize].clone();
-            mem.memory[0] = seg_b;
-
+            if mem.registers[b_idx] == 0 {
+                let seg_b = mem.memory[mem.registers[b_idx] as usize].clone();
+                mem.memory[0] = seg_b;
+            }
+            
             mem.counter = mem.registers[c_idx];
         },
         // LV Instruction
